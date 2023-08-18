@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>emoji.json</file>
         <file>NotoColorEmoji.ttf</file>
+        <file>fuzzymojifinder.png</file>
     </qresource>
 </RCC>
