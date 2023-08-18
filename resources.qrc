@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>emoji.json</file>
+        <file>NotoColorEmoji.ttf</file>
+    </qresource>
+</RCC>
