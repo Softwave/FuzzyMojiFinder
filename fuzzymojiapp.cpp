@@ -39,7 +39,7 @@ void fuzzymojiapp::initUI()
     searchBar->setPlaceholderText("Search...");
     connect(searchBar, &QLineEdit::textChanged, this, &fuzzymojiapp::performSearch);
 
-    emojiListWidget = new QListWidget(this);
+    emojiListWidget = new EmojiListWidget(this);
     emojiListWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     emojiListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
@@ -64,11 +64,13 @@ void fuzzymojiapp::initUI()
     // Add emojis to list
     addEmojisToList();
 
+
+
 }
 
 void fuzzymojiapp::copySelectedEmoji()
 {
-    // Copy the selected emoji to the clipboard
+    // Copy the selected emoji to the clipboard but not the description
     QList<QListWidgetItem *> selectedItems = emojiListWidget->selectedItems();
     if (selectedItems.length() > 0)
     {
@@ -103,35 +105,6 @@ void fuzzymojiapp::performSearch()
     }
 }
 
-int fuzzymojiapp::levenshteinDistance(const QString &s1, const QString &s2)
-{
-    int len1 = s1.length();
-    int len2 = s2.length();
-    QVector<QVector<int>> d(len1 + 1, QVector<int>(len2 + 1));
-
-    for (int i = 0; i <= len1; i++)
-    {
-        for (int j = 0; j <= len2; j++)
-        {
-            if (i == 0)
-            {
-                d[i][j] = j;
-            }
-            else if (j == 0)
-            {
-                d[i][j] = i;
-            }
-            else
-            {
-                d[i][j] = std::min({ d[i - 1][j] + 1,
-                                     d[i][j - 1] + 1,
-                                     d[i - 1][j - 1] + (s1[i - 1] == s2[j - 1] ? 0 : 1) });
-            }
-        }
-    }
-
-    return d[len1][len2];
-}
 
 void fuzzymojiapp::addEmojisToList()
 {

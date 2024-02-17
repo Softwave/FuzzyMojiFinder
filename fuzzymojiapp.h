@@ -24,7 +24,42 @@
 #include <QDebug>
 #include <QStyleFactory>
 #include <QClipboard>
+#include <QMouseEvent>
+#include <QMenu>
 
+class EmojiListWidget : public QListWidget
+{
+    Q_OBJECT
+
+public:
+    EmojiListWidget(QWidget *parent = nullptr) : QListWidget(parent) {}
+
+protected:
+    void mousePressEvent(QMouseEvent *event) override
+    {
+        if (event->button() == Qt::RightButton)
+        {
+            QPoint pos = event->pos();
+            QListWidgetItem *item = itemAt(pos);
+            if (item)
+            {
+                QMenu contextMenu;
+                QAction *copyAction = contextMenu.addAction("Copy");
+                QAction *selectedAction = contextMenu.exec(mapToGlobal(pos));
+                if (selectedAction == copyAction)
+                {
+                    // Copy only the emoji, not the description
+                    QString emoji = item->text().split(" ").at(0);
+                    QGuiApplication::clipboard()->setText(emoji);
+                }
+            }
+        }
+        else
+        {
+            QListWidget::mousePressEvent(event);
+        }
+    }
+};
 
 class fuzzymojiapp : public QMainWindow
 {
@@ -40,14 +75,16 @@ private slots:
 private:
     void initUI();
     void addEmojisToList();
-    int levenshteinDistance(const QString &s1, const QString &s2);
 
     QLineEdit *searchBar;
-    QListWidget *emojiListWidget;
+    EmojiListWidget *emojiListWidget;
     QPushButton *copyButton;
 
 
     QList<QVariantMap> emojiList;
 };
+
+
+
 
 #endif // FUZZYMOJIAPP_H
